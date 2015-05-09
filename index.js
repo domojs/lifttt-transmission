@@ -15,7 +15,7 @@ module.exports={
                 var sessionId='';
                 var lastDate=new Date(fields.initDate);
                 function getTorrents(auth, sess, last){
-                    var settings={dataType:'json', contentType:'json', headers:{'X-Transmission-Session-Id':sessionId || sess }, data:{
+                    var settings={url:fields.url, dataType:'json', contentType:'json', headers:{'X-Transmission-Session-Id':sessionId || sess || '' }, data:{
                         "arguments": { "fields": [ "id", "name", "files", "doneDate" ] },
                         "method": "torrent-get",
                         "tag": Math.ceil(Math.random()*10000)
@@ -40,6 +40,7 @@ module.exports={
                             }
                             if(responseCode==401){
                                 sessionId=res.headers['x-transmission-session-id'];
+                                console.log(res.headers);
                                 getTorrents(true, sessionId || sess, lastDate || last);
                             }
                         }};
@@ -47,8 +48,9 @@ module.exports={
                     {
                         settings.auth=fields.userName+':'+fields.password;
                     }
-                    $.ajax(fields.url, settings);
+                    $.ajax(settings);
                 };
+                getTorrents(false, sessionId, lastDate);
                 
                 var interval=setInterval(function(){ getTorrents(false,sessionId, lastDate); },fields.frequency*1000);
                 process.on('exit', function(){

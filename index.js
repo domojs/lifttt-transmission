@@ -21,6 +21,7 @@ module.exports={
                         "tag": Math.ceil(Math.random()*10000)
                         }, success:function(data){
                             $.each(data.arguments.torrents, function(index, item){
+                                console.log(new Date(item.doneDate*1000))
                                 if(new Date(item.doneDate*1000)>(lastDate || last))
                                 {
                                     $.eachAsync(item.files, function(index, file, next){
@@ -33,6 +34,7 @@ module.exports={
                             });
                             lastDate=new Date();
                         }, error:function(data, responseCode, res){
+                            
                             console.log('errorCode '+responseCode);
                             if(responseCode==409){
                                 sessionId=res.headers['x-transmission-session-id'];
@@ -40,7 +42,6 @@ module.exports={
                             }
                             if(responseCode==401){
                                 sessionId=res.headers['x-transmission-session-id'];
-                                console.log(res.headers);
                                 getTorrents(true, sessionId || sess, lastDate || last);
                             }
                         }};

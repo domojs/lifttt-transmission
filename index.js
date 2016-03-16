@@ -15,13 +15,13 @@ module.exports={
                 var sessionId='';
                 var lastDate=new Date(fields.initDate);
                 function getTorrents(auth, sess, last){
-                    var settings={url:fields.url, dataType:'json', contentType:'json', headers:{'X-Transmission-Session-Id':sessionId || sess || '' }, data:{
+                    var settings={dataType:'json', contentType:'json', headers:{'X-Transmission-Session-Id':sessionId || sess || '' }, data:{
                         "arguments": { "fields": [ "id", "name", "files", "doneDate" ] },
                         "method": "torrent-get",
                         "tag": Math.ceil(Math.random()*10000)
                         }, success:function(data){
                             $.each(data.arguments.torrents, function(index, item){
-                                console.log(new Date(item.doneDate*1000))
+                                //console.log(new Date(item.doneDate*1000))
                                 if(new Date(item.doneDate*1000)>(lastDate || last))
                                 {
                                     $.eachAsync(item.files, function(index, file, next){
@@ -29,8 +29,8 @@ module.exports={
                                         callback(result, next);
                                     });
                                 }
-                                else
-                                    console.log(item.id+' is not new');
+                                //else
+                                    //console.log(item.id+' is not new');
                             });
                             lastDate=new Date();
                         }, error:function(data, responseCode, res){
@@ -49,7 +49,7 @@ module.exports={
                     {
                         settings.auth=fields.userName+':'+fields.password;
                     }
-                    $.ajax(settings);
+                    $.ajax(fields.url, settings);
                 };
                 getTorrents(false, sessionId, lastDate);
                 

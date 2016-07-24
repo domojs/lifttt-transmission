@@ -1,3 +1,5 @@
+var debug=require('debug')('ifttt:transmission');
+
 module.exports={
     name:"transmission", 
     "triggers":
@@ -21,7 +23,7 @@ module.exports={
                         "tag": Math.ceil(Math.random()*10000)
                         }, success:function(data){
                             $.each(data.arguments.torrents, function(index, item){
-                                //console.log(new Date(item.doneDate*1000))
+                                //debug(new Date(item.doneDate*1000))
                                 if(new Date(item.doneDate*1000)>(lastDate || last))
                                 {
                                     $.eachAsync(item.files, function(index, file, next){
@@ -30,12 +32,12 @@ module.exports={
                                     });
                                 }
                                 //else
-                                    //console.log(item.id+' is not new');
+                                    //debug(item.id+' is not new');
                             });
                             lastDate=new Date();
                         }, error:function(data, responseCode, res){
                             
-                            console.log('errorCode '+responseCode);
+                            debug('errorCode '+responseCode);
                             if(responseCode==409){
                                 sessionId=res.headers['x-transmission-session-id'];
                                 getTorrents(true,sessionId || sess, lastDate || last);
